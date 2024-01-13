@@ -74,7 +74,7 @@ classdef AirfoilModifier < handle
             obj.flipAirfoil();
             obj.rotateAirfoil();
             obj.scaleAirfoil();
-            obj.zCol();
+            obj.zCol(); % remove if DAT/txt file already contains Z values 
         end
         
     end
