@@ -1,6 +1,15 @@
 # FSAE Front Wing Generator
 This is a Matlab script that can create a 2D side view of the front wing for an FSAE car (small F1-style racing cars) 
 
+## Images
+### Pre-CAD (Matlab)
+<img src="media/E423-full-front-wing-graph.png" width=50% height=50%>
+
+### Post-CAD (Solidworks)
+
+<img src="media/E423-CAD-side-view.png" width=50% height=50%>
+<img src="media/E423-CAD-top-down-view.png" width=50% height=50%>
+
 ## Why?
 
 This allows the user to modify and adjust values (Angle of attack, scale, position) before throwing it into CAD Design software. Ensures consistency of position, sizing, and rotation during the CAD process.
