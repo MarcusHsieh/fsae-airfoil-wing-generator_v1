@@ -1,25 +1,37 @@
 % AirfoilModifier.m
+% in [X Z Y] format where Z is up
 
 classdef AirfoilModifier < handle
     properties
+        fileName
+        outputFileName
         airfoilCoordinates
-        doFlip
         angleOfAttack
         scale
+        xTrans
+        yTrans
+        doFlip
+        needY
+        wantExport
+        wantPlot
         chordLength
-        fileName
     end
     
     methods
-        % Constructor
-        function obj = AirfoilModifier(airfoilCoordinates, doFlip, angleOfAttack, scale, fileName)
-            obj.airfoilCoordinates = airfoilCoordinates;
-            obj.doFlip = doFlip;
+        % constructor
+        function obj = AirfoilModifier(fileName, outputFileName, angleOfAttack, scale, xTrans, yTrans, doFlip, needY, wantExport, wantPlot)
+            obj.airfoilCoordinates = load(fileName);
+            obj.outputFileName = outputFileName;
             obj.angleOfAttack = angleOfAttack*-1;
             obj.scale = scale;
-            obj.fileName = fileName;
+            obj.xTrans = xTrans;
+            obj.yTrans = yTrans;
+            obj.doFlip = doFlip;
+            obj.needY = needY;
+            obj.wantExport = wantExport;
+            obj.wantPlot = wantPlot;
 
-            obj.chordLength = max(airfoilCoordinates(:, 1)) - min(airfoilCoordinates(:, 1));
+            obj.solve();
         end
 
         % calculate chord length
@@ -53,39 +65,56 @@ classdef AirfoilModifier < handle
             % multiply all coords by rotation matrix 
             obj.airfoilCoordinates = obj.airfoilCoordinates * rotationMatrix;
         end
+
+        % translate airfoil
+        function translateAirfoil(obj)
+            obj.airfoilCoordinates(:, 1) = obj.airfoilCoordinates(:, 1) + obj.xTrans; % x
+            obj.airfoilCoordinates(:, 2) = obj.airfoilCoordinates(:, 2) + obj.yTrans; % y
+        end
         
         % export modified airfoil to text file
         function exportAirfoil(obj)
-            % saves X Y Z into modifiedAirfoil and exports to some fileName
+            % saves X Z Y into modifiedAirfoil and exports to some fileName
             modifiedAirfoil = [obj.airfoilCoordinates(:, 1), obj.airfoilCoordinates(:, 2), obj.airfoilCoordinates(:, 3)];
-            save(obj.fileName, 'modifiedAirfoil', '-ascii');
+            save(obj.outputFileName, 'modifiedAirfoil', '-ascii');
         end
         
         % plot airfoil
         function plot(obj)
             figure;
-            % only using X Y coords for plot
-            plot(obj.airfoilCoordinates(:, 1), obj.airfoilCoordinates(:, 2), '-o');
+            % only using X Z coords for plot
+            plot(obj.airfoilCoordinates(:, 1), obj.airfoilCoordinates(:, 2), '');
             axis equal;
             grid on;
             xlabel('X');
-            ylabel('Y');
-            title(extractBefore(obj.fileName, '_') + " Front Wing");
+            ylabel('Z');
+            title(extractBefore(obj.outputFileName, '_') + " Wing");
+            disp("Chord length: " + obj.chordLength);
         end
 
-        % add 'Z' column of 0
-        function zCol(obj)
+        % add 'Y' column of 0 [X Z Y]
+        function yCol(obj)
             temp = zeros(size(obj.airfoilCoordinates, 1), 1);
             obj.airfoilCoordinates = [obj.airfoilCoordinates, temp];
         end
 
         % perform all modifications and export
-        function modify(obj)
+        function solve(obj)
             obj.flipAirfoil();
             obj.rotateAirfoil();
             obj.scaleAirfoil();
-            obj.zCol(); % remove if DAT/txt file already contains Z values 
-        end
-        
+            obj.translateAirfoil();
+            obj.chordLength = max(obj.airfoilCoordinates(:, 1)) - min(obj.airfoilCoordinates(:, 1));
+
+            if obj.needY
+                obj.yCol(); % if DAT/txt file needs Y values 
+            end
+            if obj.wantPlot
+                obj.plot();
+            end
+            if obj.wantExport
+                obj.exportAirfoil();
+            end
+        end 
     end
 end

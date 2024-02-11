@@ -16,19 +16,24 @@ This allows the user to modify and adjust values (Angle of attack, scale, positi
 
 ## How does it work?
 
-1. Download FrontWingEditorScript.mlx and AirfoilModifier.m
+1.  Download AirfoilWingEditor.mlx, AirfoilModifier.m, E423_Airfoil.txt, and empty.txt
+    - Work in AirfoilWingEditor.mlx 
+    - Download [ ].txt files to prevent errors on startup
 2.  Pick an airfoil of choice from an airfoil database (example file is airfoil E423)
     -  Download its DAT file (coordinates) into a .txt file
     -  Rename it conventionally 
     -  Put it into the same folder as the .mlx and .m files.
-3.  Change the 2nd line in FrontWingEditorScript.mlx to contain your .txt file ("*[your file].txt*")
+3. Adjust airfoilCount to the number of elements you are using
 4.  Adjust each value for each element to your preferences
-    - Base airfoil (if using multiple airfoils, make sure to load each one)
-    - Flip airfoil (typically true)
+    - Input file name
+    - Output file name
     - Angle of attack (rotation)
     - Scale (size)
-    - Output file name
-    - Translate (position)
-5. Depending on the number of elements, comment and uncomment the other *combinedCoordinates* variable to create the full list of coordinates to display
-6. Run the .mlx file
-7. Will write 3 files with the coordinates of each element in the folder (...\fsae-front-wing-generator\\[...])
+    - X-axis translation    
+    - Y-axis translation
+    - Flip airfoil
+    - Need y column
+    - Export
+    - Plot
+5. Run the .mlx file
+6. Will write n files with the coordinates of each element in the folder (...\fsae-front-wing-generator\\[...])
